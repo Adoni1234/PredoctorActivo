@@ -1,0 +1,92 @@
+﻿@model PredictorActivos.ViewModel.PredictionResultViewModel
+@{
+    ViewData["Title"] = "Resultado de Predicción";
+}
+
+<div class="row justify-content-center">
+    <div class="col-xl-9">
+
+        @if (Model.IsSuccess)
+        {
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-4">
+
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">
+                            Resultado del Análisis
+                        </h2>
+                        <p class="text-muted">
+                            Método utilizado: <strong>@Model.Modo</strong>
+                        </p>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="border rounded p-4 h-100 text-center">
+                                <h5 class="fw-bold">Tendencia Detectada</h5>
+                                <h2 class="fw-bold @(Model.Tendencia.Contains("Alcista") ? "text-success" : "text-danger")">
+                                    @Model.Tendencia
+                                </h2>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border rounded p-4 h-100">
+                                <h5 class="fw-bold">Proyección</h5>
+
+                                @if (Model.ValorFuturo.HasValue)
+                                {
+                                    <h2 class="text-primary fw-bold">
+                                        $@Model.ValorFuturo.Value.ToString("F2")
+                                    </h2>
+                                    <p class="text-muted small">
+                                        Valor estimado para el siguiente período
+                                    </p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="fw-bold">Interpretación</h5>
+                        <p>@Model.Detalles</p>
+                    </div>
+
+                    @if (Model.Calculos.Any())
+                    {
+                        <details>
+                            <summary class="fw-bold">Ver cálculo detallado</summary>
+                            <ul class="mt-2">
+                                @foreach (var c in Model.Calculos)
+                                {
+                                    <li>@c</li>
+                                }
+                            </ul>
+                        </details>
+                    }
+
+                    <div class="text-center mt-4">
+                        <a asp-action="Index" class="btn btn-primary btn-lg me-3">
+                            Nueva Predicción
+                        </a>
+                        <a asp-controller="PredictorModo" asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                            Cambiar Método
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger text-center p-5">
+                <h4>Error en el proceso</h4>
+                <p>@Model.ErrorMessage</p>
+                <a asp-action="Index" class="btn btn-danger mt-3">
+                    Volver
+                </a>
+            </div>
+        }
+
+    </div>
+</div>
